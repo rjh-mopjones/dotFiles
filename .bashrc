@@ -25,6 +25,7 @@ alias dot="cd ~/.dotfiles"
 alias exer="cd ~/exercism"
 alias mk="mkdir"
 alias ..="cd .."
+alias bk="cd -"
 alias vimrc="vim ~/.vimrc"
 
 # Find a running process
