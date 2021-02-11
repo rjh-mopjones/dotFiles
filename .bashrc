@@ -25,8 +25,10 @@ alias dot="cd ~/.dotfiles"
 alias exer="cd ~/exercism"
 alias mk="mkdir"
 alias ..="cd .."
+alias ...="cd ..; cd .."
 alias bk="cd -"
 alias vimrc="vim ~/.vimrc"
+
 
 # Find a running process
 alias ps="ps auxf"
@@ -36,11 +38,16 @@ alias psg="ps aux | grep -v grep | grep -i -e VSZ -e"
 alias power="cd /usr/lib64/python2.7/site-packages/powerline"
 alias repower="powerline-daemon -k;sleep 2; powerline-daemon -q"
 
+
+
+export PS1="\[\033[38;5;196m\]\u\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;47m\]\H\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;141m\]\w\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;196m\]:\[$(tput sgr0)\]\[\033[38;5;141m\]>\[$(tput sgr0)\]\[\033[38;5;196m\]:\[$(tput sgr0)\] \[$(tput sgr0)\]"
+
+
 # Search command history
 alias histg="history | grep"
 
 # Duh
-alias bashrf="source ~/.bashrc"
+alias sbash="source ~/.bashrc"
 alias batt="acpi"
 alias temp="acpi -t"
 alias BK="tmux rename-session BK"
@@ -65,6 +72,7 @@ alias muttg="mutt -F ~/.mutt/muttgrc"
 
 # ls variations
 alias la="ls -a"
+alias ls="ls -a --color=always"
 alias ll="ls -l"
 alias llg="ll | grep -i $1"
 alias lag="ls -a | grep -i $1"
@@ -125,7 +133,7 @@ alias cp="cp -i"
 alias listall="echo -e '\e[31m\e[1mNo.\tAlias\t\tCommand\e[0m';grep alias ~/.bashrc |cut -d' ' -f2- | sed 's/\=/\t\t/g' | nl -w 2"
 
 # Edit this file
-alias edalias="vim ~/.bashrc"
+alias bashrc="vim ~/.bashrc"
 
 # Edit git configs and shortcuts
 alias edgit="vim ~/.gitconfig"
