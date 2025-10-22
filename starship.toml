@@ -1,0 +1,118 @@
+# Starship Configuration - Developer Prompt
+
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Timeout for starship to scan files (milliseconds)
+scan_timeout = 10
+
+# Format of the prompt
+format = """$character$directory$git_branch>: """
+
+# Character module (prompt symbol)
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[✗](bold red)"
+
+# Directory
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "bold cyan"
+format = "[$path]($style)[$read_only]($read_only_style) "
+
+# Git Branch
+[git_branch]
+symbol = " "
+format = "on [$symbol$branch]($style) "
+style = "bold purple"
+
+# Git Status
+[git_status]
+format = '([\[$all_status$ahead_behind\]]($style) )'
+style = "bold yellow"
+conflicted = "⚔️ "
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked = "?${count}"
+stashed = "$"
+modified = "!${count}"
+staged = "+${count}"
+renamed = "»${count}"
+deleted = "✘${count}"
+
+# Command Duration
+[cmd_duration]
+min_time = 500
+format = "took [$duration]($style) "
+style = "bold yellow"
+
+# Username
+[username]
+show_always = false
+format = "[$user]($style)@"
+style_user = "bold green"
+
+# Hostname
+[hostname]
+ssh_only = true
+format = "[$hostname]($style) in "
+style = "bold green"
+
+# Language Versions - only shown in relevant project directories
+
+[nodejs]
+disabled = true
+
+[python]
+disabled = true
+
+[rust]
+disabled = true
+
+[golang]
+disabled = true
+
+[java]
+disabled = true
+
+[ruby]
+disabled = true
+
+[php]
+disabled = true
+
+[docker_context]
+symbol = " "
+format = "via [$symbol$context]($style) "
+style = "bold blue"
+only_with_files = true
+
+[kubernetes]
+symbol = "☸ "
+format = 'on [$symbol$context( \($namespace\))]($style) '
+style = "bold blue"
+disabled = false
+
+[aws]
+symbol = "☁️ "
+format = 'on [$symbol($profile )(\($region\) )]($style)'
+style = "bold yellow"
+
+[package]
+symbol = " "
+format = "is [$symbol$version]($style) "
+style = "bold cyan"
+display_private = false
+
+# Battery
+[battery]
+full_symbol = "🔋"
+charging_symbol = "⚡"
+discharging_symbol = "💀"
+disabled = false
+
+[[battery.display]]
+threshold = 30
+style = "bold red"
