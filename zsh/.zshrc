@@ -1,5 +1,5 @@
 
-tutoloam -U colors && colors
+autoload -U colors && colors
 PS1="%{$fg[red]%}%n%{$reset_color%}@%{$fg[blue]%}%m %{$fg[yellow]%}%~ %{$reset_color%}%% >: "
 
 # Added by Toolbox App
@@ -95,4 +95,6 @@ source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 # Enable zsh-syntax-highlighting (must be at the end)
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+# Disable starship from setting window title (breaks tmux window names)
+export STARSHIP_SET_WINDOW_TITLE=false
 eval "$(starship init zsh)"

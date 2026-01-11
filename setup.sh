@@ -58,6 +58,23 @@ for tool in "${tools[@]}"; do
     fi
 done
 
+# Install casks
+echo -e "${YELLOW}Installing cask applications...${NC}"
+casks=(
+    "nikitabobko/tap/aerospace"
+)
+
+for cask in "${casks[@]}"; do
+    # Extract short name for checking (e.g., "aerospace" from "nikitabobko/tap/aerospace")
+    short_name=$(basename "$cask")
+    if brew list "$short_name" &>/dev/null 2>&1; then
+        echo -e "${GREEN}✓ $short_name already installed${NC}"
+    else
+        echo -e "${YELLOW}Installing $short_name...${NC}"
+        brew install --cask "$cask"
+    fi
+done
+
 # Set up Java environment
 echo -e "${YELLOW}Setting up Java environment...${NC}"
 if ! grep -q "JAVA_HOME" ~/.zshrc 2>/dev/null; then
@@ -103,6 +120,17 @@ if [ -L "$HOME/.tmux.conf" ]; then
 fi
 ln -sf "$SCRIPT_DIR/.tmux.conf" "$HOME/.tmux.conf"
 echo -e "${GREEN}✓ Linked tmux config${NC}"
+
+# Aerospace
+if [ -e "$HOME/.aerospace.toml" ] && [ ! -L "$HOME/.aerospace.toml" ]; then
+    echo -e "${YELLOW}Backing up existing aerospace config...${NC}"
+    mv "$HOME/.aerospace.toml" "$backup_dir/"
+fi
+if [ -L "$HOME/.aerospace.toml" ]; then
+    rm "$HOME/.aerospace.toml"
+fi
+ln -sf "$SCRIPT_DIR/.aerospace.toml" "$HOME/.aerospace.toml"
+echo -e "${GREEN}✓ Linked aerospace config${NC}"
 
 # Initialize Starship in shell config if not already present
 echo -e "${YELLOW}Configuring Starship prompt...${NC}"

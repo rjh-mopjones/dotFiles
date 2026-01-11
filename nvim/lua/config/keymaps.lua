@@ -23,6 +23,10 @@ keymap('n', 'X', ':bnext<CR>', opts)
 keymap('n', 'Z', ':bprevious<CR>', opts)
 keymap('n', '<leader>db', ':bdelete<CR>', { desc = 'Delete buffer' })
 
+-- Move up and down 10 lines
+keymap('n', '[', '10k', opts)
+keymap('n', ']', '10j', opts)
+
 -- Window splits
 keymap('n', '<leader>vs', ':vsplit<CR>', { desc = 'Vertical split' })
 
@@ -40,6 +44,8 @@ keymap('t', '<C-l>', '<C-\\><C-n><C-w>l', opts)  -- Navigate right from terminal
 
 -- Telescope keymaps
 local telescope_builtin = require('telescope.builtin')
+keymap('n', '<leader><leader>', telescope_builtin.find_files, { desc = 'Find files' })
+keymap('n', '<leader>g', telescope_builtin.live_grep, { desc = 'Live grep' })
 keymap('n', '<leader>ff', telescope_builtin.find_files, { desc = 'Find files' })
 keymap('n', '<leader>fg', telescope_builtin.live_grep, { desc = 'Live grep' })
 keymap('n', '<leader>fb', telescope_builtin.buffers, { desc = 'Find buffers' })

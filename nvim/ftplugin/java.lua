@@ -14,9 +14,12 @@ if java_debug_jar ~= '' then
   table.insert(bundles, java_debug_jar)
 end
 
+-- Use Java 25 for jdtls (requires Java 21+, but can still work with Java 17 projects)
+local java_cmd = '/opt/homebrew/Cellar/openjdk/25.0.1/libexec/openjdk.jdk/Contents/Home/bin/java'
+
 local config = {
   cmd = {
-    'java',
+    java_cmd,
     '-Declipse.application=org.eclipse.jdt.ls.core.id1',
     '-Dosgi.bundles.defaultStartLevel=4',
     '-Declipse.product=org.eclipse.jdt.ls.core.product',
@@ -93,7 +96,7 @@ local config = {
     vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
     vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-    vim.keymap.set('n', '<leader>f', function() vim.lsp.buf.format { async = true } end, bufopts)
+    vim.keymap.set('n', '<leader>lf', function() vim.lsp.buf.format { async = true } end, bufopts)
 
     -- Java-specific commands
     vim.keymap.set('n', '<leader>jo', jdtls.organize_imports, bufopts)
@@ -107,9 +110,9 @@ local config = {
     vim.keymap.set('n', '<leader>jt', jdtls.test_nearest_method, bufopts)  -- lowercase t = current test
     vim.keymap.set('n', '<leader>jT', jdtls.test_class, bufopts)           -- uppercase T = all tests in class
 
-    -- Setup DAP for Java
+    -- Setup DAP for Java (wrapped in pcall to handle .class file edge cases)
     jdtls.setup_dap({ hotcodereplace = 'auto' })
-    require('jdtls.dap').setup_dap_main_class_configs()
+    pcall(require('jdtls.dap').setup_dap_main_class_configs)
   end,
 
   capabilities = require('cmp_nvim_lsp').default_capabilities(),

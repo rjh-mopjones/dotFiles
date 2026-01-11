@@ -26,6 +26,93 @@ vim.opt.smartindent = true
 vim.opt.termguicolors = true
 vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 300
+vim.opt.swapfile = false  -- Disable swap files
+
+-- Prevent nvim-jdtls from setting up its problematic BufReadCmd autocommands
+-- We'll set up our own handlers that don't cause errors
+vim.g.nvim_jdtls = 1
+
+-- Java class file handlers (registered early, before any plugin can interfere)
+local jdtls_classfile_group = vim.api.nvim_create_augroup("jdtls_classfile", { clear = true })
+
+-- Handle .class files
+vim.api.nvim_create_autocmd('BufReadCmd', {
+  group = jdtls_classfile_group,
+  pattern = '*.class',
+  callback = function(ev)
+    local fname = ev.match
+    vim.bo[ev.buf].buftype = 'nofile'
+    vim.bo[ev.buf].swapfile = false
+    vim.bo[ev.buf].modifiable = true
+
+    -- Check if this is a jdt:// URI
+    if vim.startswith(fname, "jdt://") then
+      local clients = vim.lsp.get_clients({ name = 'jdtls' })
+      if #clients > 0 then
+        clients[1].request('java/classFileContents', { uri = fname }, function(err, content)
+          if content then
+            vim.api.nvim_buf_set_lines(ev.buf, 0, -1, false, vim.split(content, '\n', { plain = true }))
+          end
+          vim.bo[ev.buf].filetype = 'java'
+          vim.bo[ev.buf].modifiable = false
+        end, ev.buf)
+        return
+      end
+    end
+
+    -- Regular .class file or no jdtls client - show placeholder
+    vim.api.nvim_buf_set_lines(ev.buf, 0, -1, false, {
+      '// Compiled .class file',
+      '// Use "gd" on a class name in a .java file to view decompiled source',
+    })
+    vim.bo[ev.buf].filetype = 'java'
+    vim.bo[ev.buf].modifiable = false
+  end,
+})
+
+-- Handle jdt:// URIs (decompiled sources from "go to definition")
+vim.api.nvim_create_autocmd('BufReadCmd', {
+  group = jdtls_classfile_group,
+  pattern = 'jdt://*',
+  callback = function(ev)
+    local uri = ev.file
+    local buf = ev.buf
+
+    vim.bo[buf].buftype = 'nofile'
+    vim.bo[buf].swapfile = false
+    vim.bo[buf].modifiable = true
+
+    local clients = vim.lsp.get_clients({ name = 'jdtls' })
+    if #clients == 0 then
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, { '// jdtls not running - open a .java file first' })
+      vim.bo[buf].filetype = 'java'
+      vim.bo[buf].modifiable = false
+      return
+    end
+
+    clients[1].request('java/classFileContents', { uri = uri }, function(err, content)
+      if err or not content then
+        vim.api.nvim_buf_set_lines(buf, 0, -1, false, { '// Failed to decompile class' })
+      else
+        vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(content, '\n', { plain = true }))
+      end
+      vim.bo[buf].filetype = 'java'
+      vim.bo[buf].modifiable = false
+    end, buf)
+  end,
+})
+
+-- Re-add the jdtls LspAttach handler (since we disabled the plugin's default setup)
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = jdtls_classfile_group,
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client and client.name == "jdtls" then
+      require("jdtls")
+      pcall(require("jdtls.setup")._on_attach, client, args.buf)
+    end
+  end
+})
 
 -- Terminal settings
 vim.api.nvim_create_autocmd("TermOpen", {
@@ -112,6 +199,40 @@ require("lazy").setup({
   {
     "nvim-telescope/telescope.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("telescope").setup({
+        defaults = {
+          vimgrep_arguments = {
+            "rg",
+            "--color=never",
+            "--no-heading",
+            "--with-filename",
+            "--line-number",
+            "--column",
+            "--smart-case",
+            "--hidden",
+          },
+          file_ignore_patterns = {
+            "%.class$", "%.jar$", "%.war$", "%.ear$",  -- Java binaries
+            "%.o$", "%.a$", "%.so$", "%.dylib$",      -- C/C++ binaries
+            "%.exe$", "%.dll$", "%.bin$",             -- Windows/generic binaries
+            "%.pyc$", "%.pyo$",                       -- Python bytecode
+            "%.zip$", "%.tar$", "%.gz$", "%.rar$",    -- Archives
+            "%.png$", "%.jpg$", "%.jpeg$", "%.gif$", "%.ico$", "%.webp$",  -- Images
+            "%.pdf$", "%.doc$", "%.docx$",            -- Documents
+            "node_modules/", "%.git/", "target/", "build/", "dist/",
+          },
+        },
+        pickers = {
+          find_files = {
+            -- Only match on filename, not the path
+            path_display = { "tail" },
+            -- Sort by filename match only
+            find_command = { "rg", "--files", "--hidden", "--glob", "!.git/*" },
+          },
+        },
+      })
+    end,
   },
 
   -- Octo - GitHub integration
