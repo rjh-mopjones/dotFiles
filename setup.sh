@@ -132,6 +132,17 @@ fi
 ln -sf "$SCRIPT_DIR/.aerospace.toml" "$HOME/.aerospace.toml"
 echo -e "${GREEN}✓ Linked aerospace config${NC}"
 
+# IdeaVim
+if [ -e "$HOME/.ideavimrc" ] && [ ! -L "$HOME/.ideavimrc" ]; then
+    echo -e "${YELLOW}Backing up existing ideavimrc...${NC}"
+    mv "$HOME/.ideavimrc" "$backup_dir/"
+fi
+if [ -L "$HOME/.ideavimrc" ]; then
+    rm "$HOME/.ideavimrc"
+fi
+ln -sf "$SCRIPT_DIR/.ideavimrc" "$HOME/.ideavimrc"
+echo -e "${GREEN}✓ Linked ideavimrc${NC}"
+
 # Initialize Starship in shell config if not already present
 echo -e "${YELLOW}Configuring Starship prompt...${NC}"
 if ! grep -q "starship init" ~/.zshrc 2>/dev/null; then

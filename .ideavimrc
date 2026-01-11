@@ -1,0 +1,63 @@
+set nocompatible
+set nolist set noswapfile
+set autochdir
+set autoindent
+set bs=2
+set noerrorbells
+set novisualbell
+syntax on
+set nu
+set list listchars=tab:\|\
+set showbreak=--
+colorscheme elflord
+set tabstop=4
+set background=dark
+set shiftwidth=4
+set hlsearch
+set wildmenu
+set showmode
+
+let mapleader=","
+imap ii <Esc>
+imap jk <Esc>
+imap kj <Esc>
+nmap <leader>wq :wqa! <CR>
+nmap <leader>qa :qa! <CR>
+
+nmap <Tab> <C-w><C-w>
+nmap <leader>vs :vsplit <CR>
+nmap <leader>hs :split <CR>
+nmap <leader>cs :close <CR>
+
+noremap X :action NextTab<CR>
+noremap Z :action PreviousTab<CR>
+noremap <leader>o :action UnsplitAll<CR>:action CloseAllEditorsButActive<CR>
+
+noremap [ 10k<CR>
+noremap ] 10j<CR>
+
+noremap <leader>ls :ls <CR>
+noremap <leader>0 :on <CR>
+
+
+noremap j gj
+noremap k gk
+noremap <leader>; A;<Esc>^
+noremap <leader>p "0p
+noremap <leader>P "0P
+noremap <leader>w :w<CR>
+noremap <leader>et :set expandtab<CR>
+noremap <leader>net :set noexpandtab<CR>
+noremap <leader>rt :retab!<CR>
+noremap <leader>tr :action RunClass<CR>
+noremap <leader>rr :action Run<CR>
+noremap <leader>rd :action Debug<CR>
+noremap <leader>b :action ToggleLineBreakpoint<CR>
+noremap <leader>cb :action Debugger.RemoveAllBreakpoints<CR>
+
+" Telescope-like keybindings (matching Neovim setup)
+noremap <leader><leader> :action SearchEverywhere<CR>
+noremap <leader>g :action FindInPath<CR>
+
+Plug 'preservim/nerdtree'
+Plug 'machakann/vim-highlightedyank'
