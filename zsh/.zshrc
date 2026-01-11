@@ -41,6 +41,7 @@ alias golang="cd /Users/roryhedderman/GolandProjects/"
 alias dgg="docker rm $(docker ps -a -q) && docker rmi $(docker images -a -q)"
 alias dcu="docker-compose up "
 alias nv="nvim"
+alias lc="nvim leetcode.nvim"
 alias tm="tmux"
 
 

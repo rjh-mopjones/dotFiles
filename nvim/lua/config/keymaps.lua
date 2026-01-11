@@ -22,6 +22,8 @@ keymap('n', '<C-Right>', ':vertical resize +2<CR>', opts)
 keymap('n', 'X', ':bnext<CR>', opts)
 keymap('n', 'Z', ':bprevious<CR>', opts)
 keymap('n', '<leader>db', ':bdelete<CR>', { desc = 'Delete buffer' })
+keymap('n', '<D-o>', ':%bd|e#<CR>', { desc = 'Close other buffers' })
+keymap('n', '<leader>o', ':%bd|e#<CR>', { desc = 'Close other buffers' })
 
 -- Move up and down 10 lines
 keymap('n', '[', '10k', opts)

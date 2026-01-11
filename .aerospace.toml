@@ -30,6 +30,8 @@ alt-i = 'workspace 6'
 # Navigate workspaces left/right
 alt-z = 'workspace prev'
 alt-x = 'workspace next'
+alt-comma = 'workspace prev'
+alt-period = 'workspace next'
 
 # Move window to workspace
 alt-shift-1 = 'move-node-to-workspace 1'
@@ -47,3 +49,8 @@ alt-h = 'focus left'
 alt-j = 'focus down'
 alt-k = 'focus up'
 alt-l = 'focus right'
+
+# Exclude IntelliJ from tiling (allows native tabs to work)
+[[on-window-detected]]
+if.app-id = 'com.jetbrains.intellij'
+run = 'layout floating'

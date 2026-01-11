@@ -279,6 +279,47 @@ require("lazy").setup({
     end,
   },
 
+  -- LeetCode
+  {
+    dir = "/Users/roryhedderman/lua-projects/leetcode.nvim",
+    build = ":TSUpdate html",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons",
+    },
+    opts = {
+      lang = "python3",
+    },
+    config = function(_, opts)
+      require("leetcode").setup(opts)
+
+      -- Custom command to show favorited problems
+      vim.api.nvim_create_user_command("LeetFavorites", function()
+        local ok, problemlist = pcall(require, "leetcode.cache.problemlist")
+        if not ok then
+          vim.notify("LeetCode not initialized. Run :Leet first", vim.log.levels.WARN)
+          return
+        end
+
+        local problems = problemlist.get()
+        local favorites = vim.tbl_filter(function(p)
+          return p.starred == true
+        end, problems)
+
+        if #favorites == 0 then
+          vim.notify("No favorited problems found", vim.log.levels.INFO)
+          return
+        end
+
+        local picker = require("leetcode.picker")
+        picker.question(favorites, {})
+      end, { desc = "Show LeetCode favorites" })
+    end,
+  },
+
   -- Git signs and blame
   {
     "lewis6991/gitsigns.nvim",
